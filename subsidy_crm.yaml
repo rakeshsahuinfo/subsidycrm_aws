@@ -149,7 +149,18 @@ paths:
           description: Customer not found
         '422':
           description: Validation exception
-
+  
+  /booking:
+    get:
+      tags:
+        - Bookings
+      summary: Find all bookings
+      description: Get all bookings for all customer
+      operationId: getAllBookings
+      parameters:
+          - bookingId: 
+      
+  
 components:
   schemas:
     Customer:
@@ -204,6 +215,4 @@ components:
         - email
         - mobile
         - address
-        -
-
         
