@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: Swagger Subsidy CRM - OpenAPI 3.0
+  description: |-
+    Based on our design first approach, this is an API design and documentation based on the OpenAPI 3.0 specification for our Subsidy CRM Project.
+
+    Some useful links:
+    - [The Subsidy CRM repository](https://github.com/rakeshsahuinfo/subsidycrm_aws)
+
+  contact:
+    email: hello@whizzact.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Here you can find the design documentation for the application
+  url: https://docs.google.com/spreadsheets/d/1z9GJmY8C16zSpZ20JRSRorU9PF_IifVHAFxGl2acfJk/edit?usp=drive_link
+servers:
+  - url: https://subsidycrm.swagger.io/api/v1
+tags:
+  - name: Customer
+    description: APIs to manage Customer object
+  - name: Bookings
+    description: APIs to manage Bookings object for a Customer
+  - name: User
+    description: APIs to manage User object
+  - name: Payment
+    description: APIs to manage Payments and Invoices object 
+  - name: Auth
+    description: APIs to manage Authentication
+  - name: Notification
+    description: APIs to manage notifications
+paths:
+  /customer:
+    get:
+      tags:
+        - Customer
+      summary: Find all customers
+      description: Find all customers and filter them based on the conditions provided
+      operationId: getCustomers
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: active
+            enum:
+              - active
+              - inactive
+      responses:
+        '200':
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        '400':
+          description: Invalid status value
+
+    post:
+      tags:
+        - Customer
+      summary: Add a new Customer
+      description: Add a new Customer to the CRM System
+      operationId: addCustomer
+      requestBody:
+        required: true
+        description: Create a new Customer in the CRM System
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: Customer Successfully Added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer' 
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+  /customer/{customerId}:
+    get:
+      tags:
+        - Customer
+      summary: Find Customer by ID
+      description: Returns a single Customer details
+      operationId: getCustomerById
+      parameters:
+        - name: customerId
+          in: path
+          description: ID of Customer to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Customer not found
+    put:
+      tags:
+        - Customer
+      summary: Update an existing Customer
+      description: Update an existing Customer by Id
+      operationId: updateCustomer
+      parameters:
+        - name: customerId
+          in: path
+          description: ID of Customer to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an existing Customer in the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+        required: true
+      responses:
+        '200':
+          description: Customer Successfully Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Customer not found
+        '422':
+          description: Validation exception
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the customer
+        name:
+          type: string
+          description: Customer's name
+        email:
+          type: string
+          description: Customer's email address
+        mobile:
+          type: string
+          description: Customer's mobile number
+        address:
+          type: string
+          description: Customer's residential address
+        product:
+          type: integer
+          description: Reference to product
+        model:
+          type: integer
+          description: Reference to model
+        varient:
+          type: integer
+          description: Reference to variant
+        modification:
+          type: integer
+          description: Reference to modification
+        referenceBy:
+          type: string
+          description: Name of the person or entity who referred the customer
+        createdDate:
+          type: string
+          format: date-time
+          description: Timestamp when the record was created
+        updatedDate:
+          type: string
+          format: date-time
+          description: Timestamp when the record was last updated
+        createdBy:
+          type: integer
+          description: ID of the user who created the record
+        updatedBy:
+          type: integer
+          description: ID of the user who last updated the record
+      required:
+        - name
+        - email
+        - mobile
+        - address
