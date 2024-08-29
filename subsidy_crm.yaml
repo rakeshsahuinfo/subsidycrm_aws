@@ -31,6 +31,8 @@ tags:
     description: APIs to manage Authentication
   - name: Notification
     description: APIs to manage notifications
+  - name: Enum
+    description: APIs to manage Enum configurations
 paths:
   /customer:
     get:
