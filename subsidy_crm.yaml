@@ -344,6 +344,44 @@ paths:
         '404':
           description: Booking or customer not found
 
+
+  /api/v1/customer/{customerId}/booking/{bookingId}/invoice:
+    get:
+      summary: Get the invoice for a specific booking
+      tags:
+        - Booking
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the customer
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the booking
+      responses:
+        '200':
+          description: Booking invoice details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invoiceId:
+                    type: string
+                  amount:
+                    type: number
+                  paymentStatus:
+                    type: string
+                  paymentMethod:
+                    type: string
+        '404':
+          description: Booking or customer not found
+
 components:
   schemas:
     Customer:
