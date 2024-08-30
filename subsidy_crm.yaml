@@ -240,6 +240,23 @@ paths:
         '404':
           description: User not found
 
+    delete:
+      summary: Delete a user by ID
+      operationId: deleteUserById
+      tags:
+        - User
+      parameters:
+        - name: Userid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+
 components:
   schemas:
     Customer:
