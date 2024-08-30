@@ -149,6 +149,97 @@ paths:
           description: Customer not found
         '422':
           description: Validation exception
+  /enum:
+    get:
+      tags:
+        - Enum
+      summary: Get enum values by type
+      description: Retrieve the enum values corresponding to the provided type.
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: The type for which to retrieve enum values.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of enum values.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ENUM'
+        '400':
+          description: Invalid type provided.
+
+    post:
+      tags:
+        - Enum
+      summary: Create a new enum value
+      description: Add a new enum value to the specified type.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ENUM'
+      responses:
+        '201':
+          description: Enum value successfully created.
+        '400':
+          description: Invalid input provided.
+
+  /enum/type/{type}/id/{id}:
+    get:
+      tags:
+        - Enum
+      summary: Get an enum value by type and ID
+      description: Retrieve a specific enum value based on its type and ID.
+      parameters:
+        - name: type
+          in: path
+          required: true
+          description: The type of enum to retrieve.
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: The ID of the enum value to retrieve.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Enum value details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ENUM'
+        '404':
+          description: Enum value not found.
+
+  /enum/{id}:
+    delete:
+      tags:
+        - Enum
+      summary: Delete an enum value
+      description: Delete a specific enum value by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the enum value to delete.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Enum value successfully deleted.
+        '404':
+          description: Enum value not found.
 
 components:
   schemas:
@@ -204,3 +295,19 @@ components:
         - email
         - mobile
         - address
+    ENUM:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the enum value.
+        type:
+          type: string
+          description: Type of the enum.
+        value:
+          type: string
+          description: The actual enum value.
+      required:
+        - type
+        - value
