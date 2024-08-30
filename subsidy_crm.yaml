@@ -307,7 +307,7 @@ paths:
         '404':
           description: Booking or customer not found
 
-/api/v1/customer/{customerId}/booking/{bookingId}/status:
+  /api/v1/customer/{customerId}/booking/{bookingId}/status:
     patch:
       summary: Update the status of a specific booking for a customer
       tags:
