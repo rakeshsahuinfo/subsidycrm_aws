@@ -172,6 +172,8 @@ paths:
         '400':
           description: Invalid input
 
+
+
     get:
       summary: Get a list of users
       operationId: getUsers
