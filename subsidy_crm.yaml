@@ -242,6 +242,8 @@ paths:
         '404':
           description: User not found
 
+          
+
     delete:
       summary: Delete a user by ID
       operationId: deleteUserById
