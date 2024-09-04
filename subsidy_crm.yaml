@@ -381,6 +381,56 @@ paths:
         '404':
           description: Booking or customer not found
 
+  /customer/{id}/booking/{id}/invoice/{id}:
+    get:
+      summary: Get one invoice of a booking for a customer
+      tags : 
+      - Bookings
+      operationId: getInvoice
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: The ID of the customer
+          schema:
+            type: string
+        - name: bookingId
+          in: path
+          required: true
+          description: The ID of the booking
+          schema:
+            type: string
+        - name: invoiceId
+          in: path
+          required: true
+          description: The ID of the invoice
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with invoice details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invoiceId:
+                    type: string
+                  customerId:
+                    type: string
+                  bookingId:
+                    type: string
+                  amount:
+                    type: number
+                    format: float
+                  status:
+                    type: string
+                    enum: [paid, unpaid, pending]
+                  issuedDate:
+                    type: string
+                    format: date-time
+        '404':
+          description: Invoice not found
 
   /notification:
     get:
