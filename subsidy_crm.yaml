@@ -256,7 +256,29 @@ paths:
           description: Invalid input
         '404':
           description: Booking or customer not found
-
+    
+    delete:
+      summary: Delete a specific booking for a customer
+      tags:
+        - Bookings
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the customer
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the booking
+      responses:
+        '204':
+          description: Booking deleted successfully
+        '404':
+          description: Booking or customer not found
 
   /notification:
     get:
