@@ -150,6 +150,203 @@ paths:
         '422':
           description: Validation exception
 
+  /auth/register:
+    post:
+      summary: "Registers a new user."
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+                example: "john_doe"
+              email:
+                type: "string"
+                format: "email"
+                example: "john_doe@example.com"
+              password:
+                type: "string"
+                example: "securePassword123"
+      responses:
+        "200":
+          description: "User registered successfully."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User registered successfully."
+        "400":
+          description: "Bad request. Invalid input."
+        "500":
+          description: "Internal server error."
+  /auth/login:
+    post:
+      summary: "Logs in a user."
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                format: "email"
+                example: "john_doe@example.com"
+              password:
+                type: "string"
+                example: "securePassword123"
+      responses:
+        "200":
+          description: "User logged in successfully."
+          schema:
+            type: "object"
+            properties:
+              token:
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        "401":
+          description: "Unauthorized. Invalid credentials."
+        "500":
+          description: "Internal server error."
+  /auth/me:
+    post:
+      summary: "Retrieves user details."
+      responses:
+        "200":
+          description: "User details retrieved successfully."
+          schema:
+            type: "object"
+            properties:
+              id:
+                type: "string"
+                example: "12345"
+              username:
+                type: "string"
+                example: "john_doe"
+              email:
+                type: "string"
+                format: "email"
+                example: "john_doe@example.com"
+        "401":
+          description: "Unauthorized. Invalid or missing token."
+        "500":
+          description: "Internal server error."
+  /auth/refresh:
+    post:
+      summary: "Refreshes the user token."
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              refreshToken:
+                type: "string"
+                example: "someRefreshToken123"
+      responses:
+        "200":
+          description: "Token refreshed successfully."
+          schema:
+            type: "object"
+            properties:
+              token:
+                type: "string"
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        "401":
+          description: "Unauthorized. Invalid or expired refresh token."
+        "500":
+          description: "Internal server error."
+  /auth/logout:
+    post:
+      summary: "Logs out a user."
+      responses:
+        "200":
+          description: "User logged out successfully."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "User logged out successfully."
+        "401":
+          description: "Unauthorized. Invalid or missing token."
+        "500":
+          description: "Internal server error."
+  /auth/reset-password:
+    post:
+      summary: "Resets the user password."
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                format: "email"
+                example: "john_doe@example.com"
+      responses:
+        "200":
+          description: "Password reset instructions sent."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Password reset instructions sent."
+        "400":
+          description: "Bad request. Invalid email."
+        "500":
+          description: "Internal server error."
+  /auth/change-password:
+    post:
+      summary: "Changes the user password."
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              oldPassword:
+                type: "string"
+                example: "oldSecurePassword123"
+              newPassword:
+                type: "string"
+                example: "newSecurePassword123"
+      responses:
+        "200":
+          description: "Password changed successfully."
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Password changed successfully."
+        "400":
+          description: "Bad request. Invalid input."
+        "401":
+          description: "Unauthorized. Invalid old password or missing token."
+        "500":
+          description: "Internal server error."
+          
 components:
   schemas:
     Customer:
