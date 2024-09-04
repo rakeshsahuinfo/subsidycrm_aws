@@ -307,6 +307,42 @@ paths:
         '404':
           description: Booking or customer not found
 
+  /customer/{id}/booking/{id}/status:
+    patch:
+      summary: Update the status of a specific booking for a customer
+      tags:
+        - Bookings
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the customer
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the booking
+      requestBody:
+        description: Updated status
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [pending, confirmed, cancelled, completed]
+      responses:
+        '200':
+          description: Booking status updated successfully
+        '400':
+          description: Invalid input
+        '404':
+          description: Booking or customer not found
 
   /notification:
     get:
