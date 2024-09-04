@@ -279,6 +279,34 @@ paths:
           description: Booking deleted successfully
         '404':
           description: Booking or customer not found
+    
+    get:
+      summary: Get details of a specific booking for a customer
+      tags:
+        - Bookings
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the customer
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the booking
+      responses:
+        '200':
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+        '404':
+          description: Booking or customer not found
+
 
   /notification:
     get:
