@@ -220,6 +220,44 @@ paths:
                 items:
                   $ref: '#/components/schemas/BookingResponse'  
 
+  /customer/{id}/booking/{id}:
+    put:
+      summary: Update a specific booking for a customer
+      tags:
+        - Bookings
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the customer
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the booking
+      requestBody:
+        description: Updated booking details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Booking'
+      responses:
+        '200':
+          description: Booking updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+        '400':
+          description: Invalid input
+        '404':
+          description: Booking or customer not found
+
+
   /notification:
     get:
       tags:
