@@ -204,6 +204,22 @@ paths:
         '404':
           description: Customer not found 
 
+  /booking:
+    get:
+      summary: Get all bookings for all customers
+      tags : 
+        - Bookings
+      operationId: getAllBookings
+      responses:
+        '200':
+          description: Successful response with a list of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingResponse'  
+
   /notification:
     get:
       tags:
