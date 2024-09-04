@@ -180,7 +180,29 @@ paths:
           description: Invalid input
         '404':
           description: Customer not found
-
+    
+    get:
+      summary: Get all bookings for a customer
+      tags:
+        - Bookings
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the customer
+      responses:
+        '200':
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingResponse'
+        '404':
+          description: Customer not found 
 
   /notification:
     get:
