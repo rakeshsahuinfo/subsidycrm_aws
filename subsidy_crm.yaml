@@ -152,11 +152,12 @@ paths:
         '422':
           description: Validation exception
 
-  /api/v1/customer/{customerId}/payment:
+  /customer/{id}/booking/{id}/payment:
     post:
       tags:
         - Payment
       summary: Create a new payment
+      description: Create a new payment against an existing booking for a customer
       parameters:
         - name: customerId
           in: path
@@ -182,7 +183,8 @@ paths:
     get:
       tags:
         - Payment
-      summary: Get all payment details for a booking
+      summary: Get all payment details
+      description: Get payment details for a specific booking
       parameters:
         - name: customerId
           in: path
@@ -201,11 +203,12 @@ paths:
         '404':
         description: Customer not found
 
-  /api/v1/customer/{customerId}/payment/{paymentId}:
-    get:
+  /customer/{id}/booking/{id}/payment/{id}:
+    get:  
       tags:
         - Payment
       summary: Details for a specific payment.
+      description: Get details for a specific payment for a specific booking.
       parameters:
         - name: customerId
           in: path
@@ -231,6 +234,7 @@ paths:
       tags:
         - Payment
       summary: Delete a specific payment for a customer
+      description: Delete a payment against an existing booking for a customer
       parameters:
         - name: customerId
           in: path
