@@ -438,6 +438,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -461,6 +466,11 @@ paths:
       description: Get payment details for a specific booking
       parameters:
         - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: bookingId
           in: path
           required: true
           schema:
@@ -489,6 +499,11 @@ paths:
           required: true
           schema:
             type: string
+        - name: bookingId
+          in: path
+          required: true
+          schema:
+            type: string
         - name: paymentId
           in: path
           required: true
@@ -511,6 +526,11 @@ paths:
       description: Delete a payment against an existing booking for a customer
       parameters:
         - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: bookingId
           in: path
           required: true
           schema:
