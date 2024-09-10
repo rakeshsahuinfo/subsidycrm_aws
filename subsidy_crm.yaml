@@ -184,18 +184,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
-  api/v1/user/{Userid}:
+   /user/{id}:
     get:
       summary: Get a user by ID
-      operationId: getUserById
       tags:
         - User
       parameters:
-        - name: Userid
-          in: path
+        - in: path
+          name: id
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '200':
           description: User details
