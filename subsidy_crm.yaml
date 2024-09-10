@@ -235,15 +235,14 @@ paths:
 
     delete:
       summary: Delete a user by ID
-      operationId: deleteUserById
       tags:
         - User
       parameters:
-        - name: Userid
-          in: path
+        - in: path
+          name: id
           required: true
           schema:
-            type: string
+            type: integer
       responses:
         '204':
           description: User deleted successfully
