@@ -150,27 +150,20 @@ paths:
         '422':
           description: Validation exception
 
-  /api/v1/user:
-    post:
-      summary: Create a new user
-      operationId: createUser
+  /user:
+    get:
+      summary: Get a list of users
       tags:
         - User
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserCreate'
       responses:
-        '201':
-          description: User created successfully
+        '200':
+          description: A list of users
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Invalid input
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
 
 
 
