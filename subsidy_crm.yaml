@@ -207,21 +207,20 @@ paths:
 
     put:
       summary: Update a user by ID
-      operationId: updateUserById
       tags:
         - User
       parameters:
-        - name: Userid
-          in: path
+        - in: path
+          name: id
           required: true
           schema:
-            type: string
+            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: '#/components/schemas/User'
       responses:
         '200':
           description: User updated successfully
@@ -229,8 +228,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-        '400':
-          description: Invalid input
         '404':
           description: User not found
 
