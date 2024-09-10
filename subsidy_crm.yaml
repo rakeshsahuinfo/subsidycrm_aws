@@ -305,61 +305,39 @@ components:
         - address
 
 
-         User:
+          User:
       type: object
       properties:
-        id:
+        Id:
+          type: integer
+        Name:
           type: string
-          
-        username:
+        Email:
           type: string
-          
-        email:
+        Mobile:
           type: string
-          format: email
-          
-        createdAt:
+        RoleId:
+          type: integer
+        Password:
+          type: string
+        BranchId:
+          type: integer
+        isActive:
+          type: boolean
+        CreatedDate:
           type: string
           format: date-time
-          
-        updatedAt:
+        UpdatedDate:
           type: string
           format: date-time
-          
+        CreatedBy:
+          type: integer
+        UpdatedBy:
+          type: integer
       required:
-        - Userid
-        - username
-        - email
-
-    UserCreate:
-      type: object
-      properties:
-        username:
-          type: string
-          
-        email:
-          type: string
-          format: email
-          
-      required:
-        - username
-        - email
-
-    UserUpdate:
-      type: object
-      properties:
-        username:
-          type: string
-          
-        email:
-          type: string
-          format: email
-          
-      required:
-        - username
-        - email
-
-
-        
-
-
+        - Name
+        - Email
+        - Password
+        - RoleId
+        - BranchId
+        - CreatedBy
