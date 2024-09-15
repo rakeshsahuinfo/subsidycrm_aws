@@ -426,6 +426,103 @@ paths:
         '404':
           description: Invoice not found
 
+          paths:
+  /user:
+    get:
+      summary: Get a list of users
+      tags:
+        - User
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+    post:
+      summary: Create a new user
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+                /user/{id}:
+    get:
+      summary: Get a user by ID
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    put:
+      summary: Update a user by ID
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+
+    delete:
+      summary: Delete a user by ID
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not foun
+
   /customer/{id}/booking/{id}/payment:
     post:
       tags:
@@ -1002,7 +1099,45 @@ components:
           type: number
         status:
           type: string
-          enum: [pending, confirmed, cancelled, completed]    
+          enum: [pending, confirmed, cancelled, completed]   
+
+    User:
+      type: object
+      properties:
+        Id:
+          type: integer
+        Name:
+          type: string
+        Email:
+          type: string
+        Mobile:
+          type: string
+        RoleId:
+          type: integer
+        Password:
+          type: string
+        BranchId:
+          type: integer
+        isActive:
+          type: boolean
+        CreatedDate:
+          type: string
+          format: date-time
+        UpdatedDate:
+          type: string
+          format: date-time
+        CreatedBy:
+          type: integer
+        UpdatedBy:
+          type: integer
+      required:
+        - Name
+        - Email
+        - Password
+        - RoleId
+        - BranchId
+        - CreatedBy
+ 
           
     Payment:
       type: object
