@@ -1099,7 +1099,45 @@ components:
           type: number
         status:
           type: string
-          enum: [pending, confirmed, cancelled, completed]    
+          enum: [pending, confirmed, cancelled, completed]   
+
+    User:
+      type: object
+      properties:
+        Id:
+          type: integer
+        Name:
+          type: string
+        Email:
+          type: string
+        Mobile:
+          type: string
+        RoleId:
+          type: integer
+        Password:
+          type: string
+        BranchId:
+          type: integer
+        isActive:
+          type: boolean
+        CreatedDate:
+          type: string
+          format: date-time
+        UpdatedDate:
+          type: string
+          format: date-time
+        CreatedBy:
+          type: integer
+        UpdatedBy:
+          type: integer
+      required:
+        - Name
+        - Email
+        - Password
+        - RoleId
+        - BranchId
+        - CreatedBy
+ 
           
     Payment:
       type: object
