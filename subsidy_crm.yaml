@@ -442,6 +442,24 @@ paths:
                 items:
                   $ref: '#/components/schemas/User'
 
+     post:
+      summary: Create a new user
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
   /customer/{id}/booking/{id}/payment:
     post:
       tags:
