@@ -426,6 +426,22 @@ paths:
         '404':
           description: Invoice not found
 
+          paths:
+  /user:
+    get:
+      summary: Get a list of users
+      tags:
+        - User
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
   /customer/{id}/booking/{id}/payment:
     post:
       tags:
