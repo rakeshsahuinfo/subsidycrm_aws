@@ -1,0 +1,300 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Customer API with Lambda and DynamoDB'
+
+Parameters:
+  Region:
+    Type: String
+    Description: AWS Region for deploying resources
+
+  AccountNumber:
+    Type: String
+    Description: AWS Account Number
+
+  S3BucketName:
+    Type: String
+    Description: Name of S3 Bucket
+
+Resources:
+  CustomersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Customers
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: N
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      
+  CustomerAPIRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Scan
+                Resource: !GetAtt CustomersTable.Arn
+  
+  CreateCustomerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: create-customer
+      Handler: create_cust.create_customer
+      Role: !GetAtt CustomerAPIRole.Arn
+      Runtime: python3.12
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: create_cust.zip
+      Timeout: 10
+
+  UpdateCustomerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: update-customer
+      Handler: put_cust.update_customer
+      Role: !GetAtt CustomerAPIRole.Arn
+      Runtime: python3.12
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: put_cust.zip
+      Timeout: 10
+
+  DeleteCustomerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: delete-customer
+      Handler: delete_cust.delete_customer
+      Role: !GetAtt CustomerAPIRole.Arn
+      Runtime: python3.12
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: delete_cust.zip
+      Timeout: 10
+
+  GetAllCustomersFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: get-all-customers
+      Handler: get_allcust.get_all_customers
+      Role: !GetAtt CustomerAPIRole.Arn
+      Runtime: python3.12
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: get_allcust.zip
+      Timeout: 10
+
+  GetCustomerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: get-customer
+      Handler: getcust_byid.get_customer
+      Role: !GetAtt CustomerAPIRole.Arn
+      Runtime: python3.12
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: getcust_byid.zip
+      Timeout: 10
+
+  AssignCustomerToUserFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: assign-customer-to-user
+      Runtime: python3.12
+      Handler: assign_cust.assign_customer_to_user
+      Role: !GetAtt CustomerAPIRole.Arn
+      Code:
+        S3Bucket: !Ref S3BucketName
+        S3Key: assign_cust.zip
+      Timeout: 10
+
+  CustomerAPI:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: CustomerAPI
+      Description: API for customer management
+
+  CustomerResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ParentId: !GetAtt CustomerAPI.RootResourceId
+      PathPart: customer
+
+  CustomerIdResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ParentId: !Ref CustomerResource
+      PathPart: '{customerId}'
+
+  CustomerIdUserResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ParentId: !Ref CustomerIdResource
+      PathPart: user
+
+  CustomerIdUserIdResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ParentId: !Ref CustomerIdUserResource
+      PathPart: '{userId}'
+
+  CreateCustomerMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ResourceId: !Ref CustomerResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateCustomerFunction.Arn}/invocations
+
+  UpdateCustomerMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ResourceId: !Ref CustomerIdResource
+      HttpMethod: PUT
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UpdateCustomerFunction.Arn}/invocations
+
+  DeleteCustomerMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ResourceId: !Ref CustomerIdResource
+      HttpMethod: DELETE
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DeleteCustomerFunction.Arn}/invocations
+
+  GetAllCustomersMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ResourceId: !Ref CustomerResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetAllCustomersFunction.Arn}/invocations
+
+  GetCustomerMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ResourceId: !Ref CustomerIdResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetCustomerFunction.Arn}/invocations
+
+  AssignCustomerToUserMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      ResourceId: !Ref CustomerIdUserIdResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AssignCustomerToUserFunction.Arn}/invocations
+
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - CreateCustomerMethod
+      - UpdateCustomerMethod
+      - DeleteCustomerMethod
+      - GetAllCustomersMethod
+      - GetCustomerMethod
+      - AssignCustomerToUserMethod
+    Properties:
+      RestApiId: !Ref CustomerAPI
+      StageName: v1
+  
+  CreateCustomerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CreateCustomerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${CustomerAPI}/*/POST/customer
+
+  UpdateCustomerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref UpdateCustomerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${CustomerAPI}/*/PUT/customer/{customerId}
+
+  DeleteCustomerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref DeleteCustomerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${CustomerAPI}/*/DELETE/customer/{customerId}
+
+  GetAllCustomersPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref GetAllCustomersFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${CustomerAPI}/*/GET/customer
+
+  GetCustomerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref GetCustomerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${CustomerAPI}/*/GET/customer/{customerId}
+
+  AssignCustomerToUserPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AssignCustomerToUserFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${CustomerAPI}/*/POST/customer/{customerId}/user/{userId}
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${CustomerAPI}.execute-api.${AWS::Region}.amazonaws.com/v1"
